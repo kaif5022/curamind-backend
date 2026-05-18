@@ -18,9 +18,11 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? process.env.FRONTEND_URL 
-    : function (origin, callback) { callback(null, true); },
+  origin: [
+    "https://curamind-frontend.vercel.app", 
+    "http://localhost:5173", 
+    process.env.FRONTEND_URL
+  ].filter(Boolean),
   credentials: true
 }));
 
