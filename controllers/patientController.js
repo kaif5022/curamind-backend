@@ -27,9 +27,8 @@ export const createPatient = async (req, res, next) => {
     if (!slipNumber) {
       slipNumber = await generateSlipNumber();
     }
-    const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
-    const photos = req.files && req.files.photos ? req.files.photos.map(file => `${baseUrl}/uploads/${file.filename}`) : [];
-    const slips = req.files && req.files.slips ? req.files.slips.map(file => `${baseUrl}/uploads/${file.filename}`) : [];
+    const photos = req.files && req.files.photos ? req.files.photos.map(file => file.path) : [];
+    const slips = req.files && req.files.slips ? req.files.slips.map(file => file.path) : [];
 
     const patient = new Patient({
       fullName, age, gender, mobileNumber, address, bloodGroup,
@@ -125,12 +124,11 @@ export const updatePatient = async (req, res, next) => {
       patient.followUpDate = req.body.followUpDate || patient.followUpDate;
       patient.doctorNotes = req.body.doctorNotes || patient.doctorNotes;
       
-      const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
       if (req.files && req.files.photos) {
-        patient.photos = [...(patient.photos || []), ...req.files.photos.map(file => `${baseUrl}/uploads/${file.filename}`)];
+        patient.photos = [...(patient.photos || []), ...req.files.photos.map(file => file.path)];
       }
       if (req.files && req.files.slips) {
-        patient.slips = [...(patient.slips || []), ...req.files.slips.map(file => `${baseUrl}/uploads/${file.filename}`)];
+        patient.slips = [...(patient.slips || []), ...req.files.slips.map(file => file.path)];
       }
 
       const updatedPatient = await patient.save();
