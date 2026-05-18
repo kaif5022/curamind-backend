@@ -7,6 +7,7 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import authRoutes from './routes/authRoutes.js';
 import patientRoutes from './routes/patientRoutes.js';
 import appointmentRoutes from './routes/appointmentRoutes.js';
+import analyticsRoutes from './routes/analyticsRoutes.js';
 
 // Load env vars
 dotenv.config();
@@ -45,6 +46,7 @@ app.use(cors({
 app.use('/api/auth', authRoutes);
 app.use('/api/patients', patientRoutes);
 app.use('/api/appointments', appointmentRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // Make uploads folder static
 const __dirname = path.resolve();
