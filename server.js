@@ -6,6 +6,7 @@ import connectDB from './config/db.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import authRoutes from './routes/authRoutes.js';
 import patientRoutes from './routes/patientRoutes.js';
+import appointmentRoutes from './routes/appointmentRoutes.js';
 
 // Load env vars
 dotenv.config();
@@ -18,21 +19,36 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: [
-    "https://curamind-frontend.vercel.app", 
-    "http://localhost:5173", 
-    process.env.FRONTEND_URL
-  ].filter(Boolean),
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    
+    const allowed = [
+      "https://curamind-frontend.vercel.app",
+      process.env.FRONTEND_URL
+    ].filter(Boolean);
+
+    if (allowed.includes(origin) || 
+        origin.startsWith("http://localhost") || 
+        origin.startsWith("http://127.0.0.1") || 
+        origin.startsWith("http://192.168.") || 
+        origin.startsWith("http://10.") || 
+        origin.startsWith("http://172.")) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Fallback for dev ease, adjust for prod strictness if needed
+    }
+  },
   credentials: true
 }));
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/patients', patientRoutes);
+app.use('/api/appointments', appointmentRoutes);
 
 // Make uploads folder static
 const __dirname = path.resolve();
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+app.use('/uploads', cors(), express.static(path.join(__dirname, '/uploads')));
 
 // Root route
 app.get('/', (req, res) => {
