@@ -15,8 +15,8 @@ export const analyzeSymptoms = async (req, res, next) => {
     }
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    // Use gemini-pro which is highly stable and guaranteed to exist across all API versions
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // Upgraded to Gemini 2.5 Flash for 2026 support
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `You are a highly advanced medical AI assistant for doctors and patients.
 A user has provided the following symptoms: "${symptoms}"
